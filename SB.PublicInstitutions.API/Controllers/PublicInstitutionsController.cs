@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
@@ -5,6 +6,7 @@ namespace SB.PublicInstitutions.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class PublicInstitutionsController(IPublicInstitutionsService publicInstitutionsService) : ControllerBase
     {
 

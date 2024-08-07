@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SB.PublicInstitutions.Domain.Entities;
-using Shared;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SB.PublicInstitutions.Infrastructure.Models;
+using SB.PublicInstitutions.Infrastructure.Utils;
 
-public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepository> logger) : IPublicInstitutionsRepository
+public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepository> logger, IOptions<DatabasePaths> options) : IPublicInstitutionsRepository
 {
-    private readonly string _filePath = "public_institutions.txt";
+    private readonly string filePath = options.Value.PublicInstitutions;
 
     public async Task<PublicInstitution> Create(PublicInstitution institution)
     {
@@ -21,7 +18,7 @@ public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepos
             newInstitution.Id = Guid.NewGuid();
 
             var line = JsonConvert.SerializeObject(newInstitution);
-            await File.AppendAllLinesAsync(_filePath, new[] { line });
+            await File.AppendAllLinesAsync(filePath, new[] { line });
             return newInstitution;
 
         } catch (Exception ex)
@@ -36,7 +33,8 @@ public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepos
     {
         try
         {
-            var institutions = await GetAllInternal();
+            var institutions = await FileUtils.GetDeserializedItems<PublicInstitution>(filePath);
+
             var institution = institutions.FirstOrDefault(i => i.Id == id);
             if (institution == null)
             {
@@ -44,7 +42,7 @@ public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepos
             }
 
             institutions.Remove(institution);
-            await WriteAllInstitutions(institutions);
+            await FileUtils.WriteAll(institutions, filePath);
             return true;
         }
         catch (Exception ex)
@@ -58,8 +56,7 @@ public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepos
     {
         try
         {
-            var institutions = await GetAllInternal();
-            return institutions;
+            return await FileUtils.GetDeserializedItems<PublicInstitution>(filePath);
         }
         catch (Exception ex)
         {
@@ -72,7 +69,7 @@ public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepos
     {
         try
         {
-            var institutions = await GetAllInternal();
+            var institutions = await FileUtils.GetDeserializedItems<PublicInstitution>(filePath);
             return institutions.FirstOrDefault(i => i.Id == id);
         }
         catch (Exception ex)
@@ -86,7 +83,7 @@ public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepos
     {
         try
         {
-            var institutions = await GetAllInternal();
+            var institutions = await FileUtils.GetDeserializedItems<PublicInstitution>(filePath);
             return institutions.FirstOrDefault(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
         catch (Exception ex)
@@ -100,7 +97,7 @@ public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepos
     {
         try
         {
-            var institutions = await GetAllInternal();
+            var institutions = await FileUtils.GetDeserializedItems<PublicInstitution>(filePath);
             var institution = institutions.FirstOrDefault(i => i.Id == id);
             if (institution == null)
             {
@@ -109,7 +106,7 @@ public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepos
 
             institution = CopyValuesIntoModel(institution, data);
 
-            await WriteAllInstitutions(institutions);
+            await FileUtils.WriteAll(institutions, filePath);
             return institution;
         }
         catch (Exception ex)
@@ -119,22 +116,7 @@ public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepos
         }
     }
 
-    private async Task<List<PublicInstitution>> GetAllInternal()
-    {
-        if (!File.Exists(_filePath))
-        {
-            return new List<PublicInstitution>();
-        }
-
-        var lines = await File.ReadAllLinesAsync(_filePath);
-        return lines.Select(line => JsonConvert.DeserializeObject<PublicInstitution>(line)).ToList();
-    }
-
-    private async Task WriteAllInstitutions(IEnumerable<PublicInstitution> institutions)
-    {
-        var lines = institutions.Select(JsonConvert.SerializeObject);
-        await File.WriteAllLinesAsync(_filePath, lines);
-    }
+ 
 
     private T CopyValuesIntoModel<T>(T originalObj, T updatedObj) where T : class
     {

@@ -1,0 +1,2 @@
+{"Id":"68fae547-fdf6-4f85-bd6c-c87ada88928f","Name":"string","Description":"string","Address":"string","Director":"string","Website":"string","GovermentBranch":1,"InstitutionType":1,"CreationDate":"2024-08-07T17:51:23.0348027-04:00"}
+{"Id":"d27e689a-4b6d-434a-9c0f-c53599f4136b","Name":"string34","Description":"string","Address":"string","Director":"string","Website":"string","GovermentBranch":2,"InstitutionType":2,"CreationDate":"2024-08-07T18:21:37.3178319-04:00"}
