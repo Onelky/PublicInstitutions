@@ -32,8 +32,9 @@ namespace SB.PublicInstitutions.API.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var publicInstitution = await publicInstitutionsService.Delete(id);
-            return Ok(publicInstitution);
+            var isDeleted = await publicInstitutionsService.Delete(id);
+            if(isDeleted) return Ok();
+            return BadRequest();
         }
 
     }

@@ -1,0 +1,1 @@
+{"Id":"b5d58c23-7e54-49d1-8004-401a474be520","Name":"string2","Description":"string","Address":"string","Director":"string","Website":"string","GovermentBranch":1,"InstitutionType":1,"CreationDate":"2024-08-07T13:51:19.9340058-04:00"}

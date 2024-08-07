@@ -1,11 +1,11 @@
-﻿using SB.PublicInstitutions.Domain.Entities;
+﻿using Microsoft.Extensions.Logging;
+using SB.PublicInstitutions.Domain.Entities;
 using SB.PublicInstitutions.Domain.Exceptions;
-using Serilog;
 using Shared;
 
 namespace SB.PublicInstitutions.Service
 {
-    internal sealed class PublicInstitutionsService(IPublicInstitutionsRepository repository, ILogger logger) : IPublicInstitutionsService
+    public sealed class PublicInstitutionsService(IPublicInstitutionsRepository repository, ILogger<PublicInstitutionsService> logger) : IPublicInstitutionsService
     {
 
         public async Task<PublicInstitution>Create(PublicInstitutionDto institution)
@@ -14,13 +14,13 @@ namespace SB.PublicInstitutions.Service
 
             if (existingInstitution is not null)
             {
-                logger.Error($"Institution with Name {institution.Name} already exists" );
-                throw new InstitutionNameExists($"Institution with Name {institution.Name} already exists");
+                logger.LogError($"Institution with Name {institution.Name} already exists" );
+                throw new InstitutionNameExists(institution.Name);
             }
 
             var mappedInstitution = CopyValuesIntoModel<PublicInstitution, PublicInstitutionDto>(new PublicInstitution(), institution);
             var result = await repository.Create(mappedInstitution);
-            logger.Information("Created Public Institution");
+            logger.LogInformation("Created Public Institution");
             return result;
         }
 
@@ -30,17 +30,17 @@ namespace SB.PublicInstitutions.Service
 
             if (institution is null)
             {
-                logger.Error("Failed at finding Institution with ID" + id);
+                logger.LogError("Failed at finding Institution with ID" + id);
                 throw new NotFoundException("Institution does not exist");
             }
             var result = await repository.Delete(id);
-            logger.Information("Deleted Institution with ID" + id);
+            logger.LogInformation("Deleted Institution with ID" + id);
             return result;
         }
 
         public async Task<IEnumerable<PublicInstitution>> GetAll()
         {
-            logger.Information("Get All Public Institutions");
+            logger.LogInformation("Get All Public Institutions");
             var institutions = await repository.GetAll();
             return institutions;
             //var ownersDto = institutions.Adapt<IEnumerable<OwnerDto>>();
@@ -55,12 +55,12 @@ namespace SB.PublicInstitutions.Service
 
             if (institution is null)
             {
-                logger.Error("Failed at finding Institution with ID" + id);
+                logger.LogError("Failed at finding Institution with ID" + id);
                 throw new NotFoundException("Institution does not exist");
             }
 
             var result = await repository.Update(id, CopyValuesIntoModel<PublicInstitution, PublicInstitutionDto>(new PublicInstitution(), update));
-            logger.Information("Update Public Institution");
+            logger.LogInformation("Update Public Institution");
             return result;
         }
 

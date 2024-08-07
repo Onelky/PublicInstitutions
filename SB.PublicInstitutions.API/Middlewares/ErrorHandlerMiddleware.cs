@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using SB.PublicInstitutions.Domain.Exceptions;
+using System.Net;
 using System.Security.Authentication;
 using System.Text.Json;
 
@@ -17,7 +18,9 @@ public class ErrorHandlerMiddleware(RequestDelegate next)
 
             response.StatusCode = error switch
             {
-                KeyNotFoundException e => (int)HttpStatusCode.NotFound,
+                NotFoundException e => (int)HttpStatusCode.BadRequest,
+                InstitutionNameExists e => (int)HttpStatusCode.BadRequest,
+                BadRequestException e => (int)HttpStatusCode.BadRequest,
                 AuthenticationException e => (int)HttpStatusCode.BadRequest,
                 UnauthorizedAccessException e => (int)HttpStatusCode.Unauthorized,
                 _ => (int)HttpStatusCode.InternalServerError

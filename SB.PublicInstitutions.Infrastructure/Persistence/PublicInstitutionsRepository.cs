@@ -5,10 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SB.PublicInstitutions.Domain.Entities;
-using Serilog;
 using Shared;
+using Microsoft.Extensions.Logging;
 
-internal sealed class PublicInstitutionsRepository(ILogger logger) : IPublicInstitutionsRepository
+public sealed class PublicInstitutionsRepository(ILogger<PublicInstitutionsRepository> logger) : IPublicInstitutionsRepository
 {
     private readonly string _filePath = "public_institutions.txt";
 
@@ -16,14 +16,17 @@ internal sealed class PublicInstitutionsRepository(ILogger logger) : IPublicInst
     {
         try
         {
-            var newInstitution = new PublicInstitution { Id = Guid.NewGuid() };
-            var line = JsonConvert.SerializeObject(institution);
+            var newInstitution = institution;
+            newInstitution.CreationDate = DateTime.Now;
+            newInstitution.Id = Guid.NewGuid();
+
+            var line = JsonConvert.SerializeObject(newInstitution);
             await File.AppendAllLinesAsync(_filePath, new[] { line });
             return newInstitution;
 
         } catch (Exception ex)
         {
-            logger.Error(ex, "Error creating an Institution");
+            logger.LogError(ex, "Error creating an Institution");
             throw new Exception("Error creating an Institution", ex);
         }
         
@@ -46,7 +49,7 @@ internal sealed class PublicInstitutionsRepository(ILogger logger) : IPublicInst
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Error deleting an Institution");
+            logger.LogError(ex, "Error deleting an Institution");
             throw new Exception("Error deleting an Institution", ex);
         }
     }
@@ -60,7 +63,7 @@ internal sealed class PublicInstitutionsRepository(ILogger logger) : IPublicInst
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Error getting all Institutions");
+            logger.LogError(ex, "Error getting all Institutions");
             throw new Exception("Error getting all Institutions", ex);
         }
     }
@@ -74,7 +77,7 @@ internal sealed class PublicInstitutionsRepository(ILogger logger) : IPublicInst
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Error getting Institution by Id");
+            logger.LogError(ex, "Error getting Institution by Id");
             throw new Exception("Error getting Institution by Id", ex);
         }
     }
@@ -88,7 +91,7 @@ internal sealed class PublicInstitutionsRepository(ILogger logger) : IPublicInst
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Error getting Institution by Name");
+            logger.LogError(ex, "Error getting Institution by Name");
             throw new Exception("Error getting Institution by Name", ex);
         }
     }
@@ -111,7 +114,7 @@ internal sealed class PublicInstitutionsRepository(ILogger logger) : IPublicInst
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Error updating Institution");
+            logger.LogError(ex, "Error updating Institution");
             throw new Exception("Error updating Institution", ex);
         }
     }
@@ -145,6 +148,8 @@ internal sealed class PublicInstitutionsRepository(ILogger logger) : IPublicInst
         {
             try
             {
+                if (property.Name.Equals("Id")) continue;
+
                 var updatedValue = property.GetValue(updatedObj, null);
                 if (updatedValue == null) continue;
 
@@ -156,7 +161,7 @@ internal sealed class PublicInstitutionsRepository(ILogger logger) : IPublicInst
             }
             catch (Exception ex)
             {
-                logger.Error(ex, $"Error updating property {property.Name}: {ex.Message}");
+                logger.LogError(ex, $"Error updating property {property.Name}: {ex.Message}");
             }
         }
 
