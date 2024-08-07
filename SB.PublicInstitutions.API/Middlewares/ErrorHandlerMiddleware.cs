@@ -22,7 +22,7 @@ public class ErrorHandlerMiddleware(RequestDelegate next)
                 InstitutionNameExists e => (int)HttpStatusCode.BadRequest,
                 BadRequestException e => (int)HttpStatusCode.BadRequest,
                 AuthenticationException e => (int)HttpStatusCode.BadRequest,
-                UnauthorizedAccessException e => (int)HttpStatusCode.Unauthorized,
+                Unauthorized e => (int)HttpStatusCode.BadRequest,
                 _ => (int)HttpStatusCode.InternalServerError
             };
 
