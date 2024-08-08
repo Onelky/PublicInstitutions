@@ -18,14 +18,14 @@ namespace SB.PublicInstitutions.API.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] PublicInstitutionDto institutionDto)
+        public async Task<IActionResult> Create([FromBody] PublicInstitutionCreateDto institutionDto)
         {
             var publicInstitution = await publicInstitutionsService.Create(institutionDto);
             return Ok(publicInstitution);
         }
 
         [HttpPut("{id:Guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] PublicInstitutionDto institutionDto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] PublicInstitutionUpdateDto institutionDto)
         {
             var publicInstitution = await publicInstitutionsService.Update(id, institutionDto);
             return Ok(publicInstitution);

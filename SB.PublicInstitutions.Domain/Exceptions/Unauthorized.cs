@@ -3,7 +3,7 @@
     public sealed class Unauthorized: Exception
     {
         public Unauthorized(string username)
-            : base("Unauthorized user authorized " + username)
+            : base("Unauthorized user " + username)
         {
         }
     }

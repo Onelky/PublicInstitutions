@@ -18,7 +18,7 @@ public sealed class UsersRepository(ILogger<UsersRepository> logger, IOptions<Da
 
             if (existingUser is not null) {
                 logger.LogError("Attempted to create user with an existing username");
-                throw new UsernameExists(user.Username);
+                throw new DuplicatedUsername(user.Username);
             }
 
             user.Password = HashPassword(user.Password);

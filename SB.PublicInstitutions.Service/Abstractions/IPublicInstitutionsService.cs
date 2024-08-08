@@ -9,9 +9,9 @@ public interface IPublicInstitutionsService
 {
     Task<IEnumerable<PublicInstitution>> GetAll();
 
-    Task<PublicInstitution> Create(PublicInstitutionDto institutionDto);
+    Task<PublicInstitution> Create(PublicInstitutionCreateDto institutionDto);
 
-    Task<PublicInstitution> Update(Guid id, PublicInstitutionDto institutionDto);
+    Task<PublicInstitution> Update(Guid id, PublicInstitutionUpdateDto institutionDto);
 
     Task<bool> Delete(Guid id);
 }

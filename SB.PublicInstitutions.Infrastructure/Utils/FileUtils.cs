@@ -21,5 +21,11 @@ namespace SB.PublicInstitutions.Infrastructure.Utils
             await File.WriteAllLinesAsync(filePath, lines);
         }
 
+        public static async Task AppendLine<T>(T item, string filePath) where T : class
+        {
+            var line = JsonConvert.SerializeObject((object)item);
+            await File.AppendAllLinesAsync(filePath, new[] { line });
+        }
+
     }
 }

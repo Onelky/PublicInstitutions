@@ -19,7 +19,7 @@ public class ErrorHandlerMiddleware(RequestDelegate next)
             response.StatusCode = error switch
             {
                 NotFoundException e => (int)HttpStatusCode.BadRequest,
-                InstitutionNameExists e => (int)HttpStatusCode.BadRequest,
+                DuplicatedInstitutionName e => (int)HttpStatusCode.BadRequest,
                 BadRequestException e => (int)HttpStatusCode.BadRequest,
                 AuthenticationException e => (int)HttpStatusCode.BadRequest,
                 Unauthorized e => (int)HttpStatusCode.BadRequest,

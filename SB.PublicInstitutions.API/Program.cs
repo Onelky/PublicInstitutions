@@ -1,4 +1,6 @@
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SB.PublicInstitutions.Infrastructure.Models;
@@ -16,12 +18,13 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 
-// Add services to the container.
+// Add services to the container
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
 builder.Services.Configure<DatabasePaths>(builder.Configuration.GetSection("ApiSettings:DatabasePaths"));
+
 
 // Scoped Services
 builder.Services.AddScoped<IPublicInstitutionsService, PublicInstitutionsService>();

@@ -1,8 +1,8 @@
 ﻿namespace SB.PublicInstitutions.Domain.Exceptions
 {
-    public sealed class UsernameExists : BadRequestException
+    public sealed class DuplicatedUsername : BadRequestException
     {
-        public UsernameExists(string name)
+        public DuplicatedUsername(string name)
             : base($"Username {name} already exists")
         {
         }

@@ -2,7 +2,7 @@ using SB.PublicInstitutions.Domain.Enums;
 
 namespace Shared;
 
-public sealed class PublicInstitutionDto
+public sealed class PublicInstitutionCreateDto
 {
     public string Name { get; set; }
     public string Description { get; set; }

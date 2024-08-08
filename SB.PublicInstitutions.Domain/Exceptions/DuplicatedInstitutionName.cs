@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SB.PublicInstitutions.Domain.Exceptions
 {
-    public sealed class InstitutionNameExists : BadRequestException
+    public sealed class DuplicatedInstitutionName : BadRequestException
     {
-        public InstitutionNameExists(string name)
-            : base($"Institution with name {name} already exists")
+        public DuplicatedInstitutionName(string name)
+            : base($"Institution name is already registered")
         {
         }
     }
