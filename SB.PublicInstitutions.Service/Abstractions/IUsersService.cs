@@ -1,8 +1,10 @@
-﻿namespace SB.PublicInstitutions.Services.Abstractions
+﻿using Shared.DTOs;
+
+namespace SB.PublicInstitutions.Services.Abstractions
 {
     public interface IUsersService 
     {
         Task<string> Login(User user);
-        Task<User> Register(User user);
+        Task<RegisterUserResponse> Register(User user);
     }
 }

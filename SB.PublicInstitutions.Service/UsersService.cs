@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using SB.PublicInstitutions.Domain.Exceptions;
 using SB.PublicInstitutions.Services.Abstractions;
 using SB.PublicInstitutions.Services.Models;
+using Shared.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -28,11 +29,11 @@ namespace SB.PublicInstitutions.Service
             return GenerateToken(user);
         }
 
-        public async Task<User> Register(User user)
+        public async Task<RegisterUserResponse> Register(User user)
         {
             var newUser = await repository.Register(user);
             logger.LogInformation($"User registered");
-            return newUser;
+            return new RegisterUserResponse { UserName = user.Username, Token = GenerateToken(user)};
         }
 
         public string GenerateToken(User user)
